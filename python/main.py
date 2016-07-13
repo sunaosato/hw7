@@ -6,6 +6,7 @@ import json
 import logging
 import random
 import webapp2
+import time
 
 # Reads json description of the board and provides simple interface.
 class Game:
@@ -126,6 +127,40 @@ def PrettyMove(move):
 	m = move["Where"]
 	return '%s%d' % (chr(ord('A') + m[0] - 1), m[1])
 
+def minimax(g,depth):
+        if depth > 0:
+                valid_moves = g.ValidMoves()
+                scores = []
+                for a in valid_moves:
+                        next = g.NextBoardPosition(a)
+                        scores.append(minimax(next,depth-1))
+
+                if g.Next == 1:
+                        return max(scores)
+                else:
+                        return min(scores)
+
+                              
+        else:
+                count1 = 0
+                count2 = 0
+                for y in xrange(1,9):
+                        for x in xrange(1,9):
+                                player = g.Pos(x,y)
+                                if player == 1:
+                                      #  if (x == 1 and y == 2) and (x == 8 and y == 2) and(x == 2 and y == 1) and(x == 2 and y == 2) :
+                                        count1 +=1
+                                elif player == 2:
+                                        count2 += 1
+
+                point = count1 - count2
+                return point
+                
+                        #                if a["As"]==1:
+ #                       value = -(float("inf"))
+  #              else:
+   #                     value = float("inf")
+                        
 class MainHandler(webapp2.RequestHandler):
     # Handling GET request, just for debugging purposes.
     # If you open this handler directly, it will show you the
@@ -152,9 +187,10 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
         self.pickMove(g)
 
 
-    def pickMove(self, g):
-    	# Gets all valid moves.
-    	valid_moves = g.ValidMoves()
+    def pickMove(self,g):
+        depth = 2
+        valid_moves = g.ValidMoves()
+
     	if len(valid_moves) == 0:
     		# Passes if no valid moves.
     		self.response.write("PASS")
@@ -163,7 +199,22 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
                 # TO STEP STUDENTS:
                 # You'll probably want to change how this works, to do something
                 # more clever than just picking a random move.
-	    	move = random.choice(valid_moves)
+	    #	move = random.choice(valid_moves)
+                for a in valid_moves:
+                        good_min = float("inf")
+                        good_max = float("-inf")
+                        move = a
+                        next = g.NextBoardPosition(a)
+                        score = minimax(next,depth)#最良のaを返したい
+
+                        if g.Next == 1 and good_max < score:
+                                 good_max = score
+                                 move = next
+                        elif g.Next ==2 and good_min > score:
+                                good_min = score
+                                move = next
+                                        
+                        
     		self.response.write(PrettyMove(move))
 
 app = webapp2.WSGIApplication([
