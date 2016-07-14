@@ -34,6 +34,7 @@ class Game:
 	#   "Where": [x,y]
 	#   "As": player number
 	def ValidMoves(self):
+#                logging.info("next:%s"%self.Next())
                 moves = []
                 for y in xrange(1,9):
                         for x in xrange(1,9):
@@ -127,30 +128,24 @@ def PrettyMove(move):
 	m = move["Where"]
 	return '%s%d' % (chr(ord('A') + m[0] - 1), m[1])
 
-def minimax(g,depth):
+
+def minmax(g,depth):
         if depth > 0:
                 valid_moves = g.ValidMoves()
-                scores = []
-                for a in valid_moves:
-                        next = g.NextBoardPosition(a)
-                        scores.append(minimax(next,depth-1))
-                        logging.info("a:%s"%a)
-                        logging.info("scores:%s"%scores)
-                        if a["As"] == 1:
-                       # if not scores:
+                if len(valid_moves)== 0:
+                        return -10
+                else:
+                        scores = []
+                        for a in valid_moves:
+                                next = g.NextBoardPosition(a)
+                                scores.append(minmax(next,depth-1))
+                        if g.Next == 1:
                                 num1 = max(scores)
-                                logging.info("num1:%s"%num1)
                                 return num1
-                        #else: return 0
                         else:
-                        #if not scores:
                                 num2 = min(scores)
-                                logging.info("num2:%s"%num2)
                                 return num2
-                                
-                        #else:
-                         #       return 0
-
+                
                               
         else:
                 count1 = 0
@@ -198,8 +193,8 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
 
 
     def pickMove(self,g):
-        start = time.time()
-        depth = 10
+       # start = time.time()
+        depth = 4
         valid_moves = g.ValidMoves()
 
     	if len(valid_moves) == 0:
@@ -211,12 +206,14 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
                 # You'll probably want to change how this works, to do something
                 # more clever than just picking a random move.
 	    #	move = random.choice(valid_moves)
+                #logging.info("main_valid:%s"%valid_moves)
+                
                 for a in valid_moves:
                         good_min = float("inf")
                         good_max = float("-inf")
                         move = valid_moves[0]
                         state = g.NextBoardPosition(a)
-                        score = minimax(state,depth)#最良のaを返したい
+                        score = minmax(state,depth)#最良のaを返したい
 
                         if g.Next == 1 and good_max < score:
                                  good_max = score
@@ -227,8 +224,8 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
                                         
         
     		self.response.write(PrettyMove(move))
-        end = time.time() -start
-        logging.info("time:%s"%end)
+      #  end = time.time() -start
+      #  logging.info("time:%s"%end)
                 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
