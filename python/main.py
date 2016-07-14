@@ -134,11 +134,22 @@ def minimax(g,depth):
                 for a in valid_moves:
                         next = g.NextBoardPosition(a)
                         scores.append(minimax(next,depth-1))
-
-                if g.Next == 1:
-                        return max(scores)
-                else:
-                        return min(scores)
+                        logging.info("a:%s"%a)
+                        logging.info("scores:%s"%scores)
+                        if a["As"] == 1:
+                       # if not scores:
+                                num1 = max(scores)
+                                logging.info("num1:%s"%num1)
+                                return num1
+                        #else: return 0
+                        else:
+                        #if not scores:
+                                num2 = min(scores)
+                                logging.info("num2:%s"%num2)
+                                return num2
+                                
+                        #else:
+                         #       return 0
 
                               
         else:
@@ -187,7 +198,8 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
 
 
     def pickMove(self,g):
-        depth = 2
+        start = time.time()
+        depth = 10
         valid_moves = g.ValidMoves()
 
     	if len(valid_moves) == 0:
@@ -206,16 +218,18 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
                         state = g.NextBoardPosition(a)
                         score = minimax(state,depth)#最良のaを返したい
 
-                        if g.Next == a["As"] and good_max < score:
+                        if g.Next == 1 and good_max < score:
                                  good_max = score
                                  move = a
-#                        elif g.Next ==2 and good_min > score:
- #                               good_min = score
-  #                              move = a
+                        elif g.Next ==2 and good_min > score:
+                                good_min = score
+                                move = a
                                         
-                        
+        
     		self.response.write(PrettyMove(move))
-
+        end = time.time() -start
+        logging.info("time:%s"%end)
+                
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
 ], debug=True)
