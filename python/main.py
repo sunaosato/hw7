@@ -148,19 +148,18 @@ def minimax(g,depth):
                         for x in xrange(1,9):
                                 player = g.Pos(x,y)
                                 if player == 1:
-                                      #  if (x == 1 and y == 2) and (x == 8 and y == 2) and(x == 2 and y == 1) and(x == 2 and y == 2) :
+                                        if (x == 1 and y == 1) and (x == 1 and y == 8) and(x == 8 and y == 1) and(x == 8 and y == 2) :
+                                                count1 += 5
                                         count1 +=1
                                 elif player == 2:
+                                        if (x == 1 and y == 1) and (x == 1 and y == 8) and(x == 8 and y == 1) and(x == 8 and y == 2) :
+                                                count2 += 5
                                         count2 += 1
 
                 point = count1 - count2
                 return point
-                
-                        #                if a["As"]==1:
- #                       value = -(float("inf"))
-  #              else:
-   #                     value = float("inf")
-                        
+
+        
 class MainHandler(webapp2.RequestHandler):
     # Handling GET request, just for debugging purposes.
     # If you open this handler directly, it will show you the
@@ -203,16 +202,16 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
                 for a in valid_moves:
                         good_min = float("inf")
                         good_max = float("-inf")
-                        move = a
-                        next = g.NextBoardPosition(a)
-                        score = minimax(next,depth)#最良のaを返したい
+                        move = valid_moves[0]
+                        state = g.NextBoardPosition(a)
+                        score = minimax(state,depth)#最良のaを返したい
 
                         if g.Next == 1 and good_max < score:
                                  good_max = score
-                                 move = next
+                                 move = a
                         elif g.Next ==2 and good_min > score:
                                 good_min = score
-                                move = next
+                                move = a
                                         
                         
     		self.response.write(PrettyMove(move))
