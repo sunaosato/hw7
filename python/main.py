@@ -148,11 +148,11 @@ def minimax(g,depth):
                         for x in xrange(1,9):
                                 player = g.Pos(x,y)
                                 if player == 1:
-                                        if (x == 1 and y == 1) and (x == 1 and y == 8) and(x == 8 and y == 1) and(x == 8 and y == 2) :
+                                        if (x == 1 and y == 1) and (x == 1 and y == 8) and(x == 8 and y == 1) and(x == 8 and y == 8) :
                                                 count1 += 5
                                         count1 +=1
                                 elif player == 2:
-                                        if (x == 1 and y == 1) and (x == 1 and y == 8) and(x == 8 and y == 1) and(x == 8 and y == 2) :
+                                        if (x == 1 and y == 1) and (x == 1 and y == 8) and(x == 8 and y == 1) and(x == 8 and y == 8) :
                                                 count2 += 5
                                         count2 += 1
 
@@ -206,12 +206,12 @@ Paste JSON here:<p/><textarea name=json cols=80 rows=24></textarea>
                         state = g.NextBoardPosition(a)
                         score = minimax(state,depth)#最良のaを返したい
 
-                        if g.Next == 1 and good_max < score:
+                        if g.Next == a["As"] and good_max < score:
                                  good_max = score
                                  move = a
-                        elif g.Next ==2 and good_min > score:
-                                good_min = score
-                                move = a
+#                        elif g.Next ==2 and good_min > score:
+ #                               good_min = score
+  #                              move = a
                                         
                         
     		self.response.write(PrettyMove(move))
